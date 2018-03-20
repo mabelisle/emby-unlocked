@@ -7,15 +7,6 @@ Releases including the patch are available below:
 - [Arch Linux](https://aur.archlinux.org/packages/emby-server-unlocked/)
 - [Docker](https://hub.docker.com/r/nvllsvm/emby-unlocked/)
 
-## Why?
-At some point, the developers of Emby added a nasty nag screen before playback.
-Worse, you need to wait a few seconds before being able to dismiss it.
-They refuse to address removing it as seen [here](https://github.com/MediaBrowser/Emby/issues/2469).
-
-This is **bullshit** for a GPLv2 licensed product. Of course someone is going to fork Emby to remove it.
-
-So while my main motivation was to **remove** the nag screen, unlocking all the premium features proved the simplest way.
-
 ## Help! Premiere feature x does not work.
 While this patch makes your local server believe Emby Premiere features are unlocked, some features may still not function.
 For example, both tv.emby.media and the mobile apps rely upon validation with the Emby-owned mb3admin.com server.
@@ -39,12 +30,12 @@ The included version of this in the source distribution is minified. Thus, makin
 The only difference boils down to replacing ``self.getRegistrationInfo`` with this:
 
 ```
-self.getRegistrationInfo = function(feature, apiClient) {
-    var cacheKey = "regInfo-" + apiClient.serverInfo().Id;
+self.getRegistrationInfo = function (feature, apiClient, options) {
+    var cacheKey = getCacheKey(feature, apiClient, options);
     appStorage.setItem(cacheKey, JSON.stringify({
         lastValidDate: new Date().getTime(),
         deviceId: self.deviceId()
     }));
     return Promise.resolve();
-}
+};
 ```
